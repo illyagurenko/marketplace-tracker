@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
+// сущность товара
 @Entity
 @Table(name = "products")
 @Getter

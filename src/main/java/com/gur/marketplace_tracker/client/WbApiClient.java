@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
+// класс компонент в котором бин делает запрос к https://wb.ru для получения текущей цены
 @Component
 public class WbApiClient {
 

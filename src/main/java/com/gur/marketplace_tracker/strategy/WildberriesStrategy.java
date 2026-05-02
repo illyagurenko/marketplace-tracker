@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+// класс реализованный паттерном стратегия реализующий его методы
 @Component
 public class WildberriesStrategy implements MarketplaceStrategy{
 

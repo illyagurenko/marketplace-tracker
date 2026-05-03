@@ -1,5 +1,6 @@
 package com.gur.marketplace_tracker.service;
 
+import com.gur.marketplace_tracker.dto.ProductRequest;
 import com.gur.marketplace_tracker.entity.Product;
 import com.gur.marketplace_tracker.repository.ProductRepository;
 import com.gur.marketplace_tracker.strategy.MarketplaceStrategy;
@@ -19,14 +20,19 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    public void createTrack(String url, Long targetPrice){
+    public Product createTrack(ProductRequest request){
+        String url = request.getUrl();
+        Long targetPrice = request.getTargetPrice();
         MarketplaceStrategy strategy = strategies.stream()
                 .filter(s -> s.isValidToUse(url))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("сервис не поддерживается"));
 
         String article = strategy.getArticleFromUrl(url);
-        Long curPrice = strategy.getCurrentPrice(article);
+        Long curPrice = strategy.getCurrentPrice(url);
+        if (curPrice == null) {
+            throw new IllegalArgumentException("не удалось получить цену товара");
+        }
 
         Product product = new Product();
         product.setArticle(article);
@@ -34,6 +40,6 @@ public class ProductService {
         product.setTargetPrice(targetPrice);
         product.setIsActive(true);
 
-        productRepository.save(product);
+        return productRepository.save(product);
     }
 }

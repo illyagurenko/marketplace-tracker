@@ -11,7 +11,7 @@ public interface MarketplaceStrategy {
     String getArticleFromUrl(String url);
 
     // достать текущую цену товара по артиклю
-    long getCurrentPrice(String article);
+    Long getCurrentPrice(String article);
 
 
 }

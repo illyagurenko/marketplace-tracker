@@ -18,22 +18,27 @@ repositories {
 }
 
 dependencies {
+	// Основные зависимости Spring Boot
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
-	implementation("org.springframework.boot:spring-boot-starter-webmvc")
-	implementation("org.springframework.boot:spring-boot-starter-restclient")
+	implementation("org.springframework.boot:spring-boot-starter-web")
 
+	// Сторонние библиотеки
 	implementation("org.jsoup:jsoup:1.21.2")
-	compileOnly("org.projectlombok:lombok")
 	runtimeOnly("org.postgresql:postgresql")
+
+	// Lombok (Основной код)
+	compileOnly("org.projectlombok:lombok")
 	annotationProcessor("org.projectlombok:lombok")
-	testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")
-	testImplementation("org.springframework.boot:spring-boot-starter-validation-test")
-	testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
+
+	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	// Source: https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-restclient-test
+	implementation("org.springframework.boot:spring-boot-restclient-test")
+	// Lombok (Тесты)
 	testCompileOnly("org.projectlombok:lombok")
-	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 	testAnnotationProcessor("org.projectlombok:lombok")
-}
+
+	testRuntimeOnly("org.junit.platform:junit-platform-launcher")}
 
 tasks.withType<Test> {
 	useJUnitPlatform()

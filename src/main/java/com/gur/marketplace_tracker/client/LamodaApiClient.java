@@ -13,9 +13,9 @@ public class LamodaApiClient {
 
     private final RestClient restClient;
 
-    public LamodaApiClient() {
+    public LamodaApiClient(RestClient.Builder restClientBuilder) {
         // настройка клиента под реального пользователя
-        this.restClient = RestClient.builder()
+        this.restClient = restClientBuilder
                 .baseUrl("https://www.lamoda.ru")
                 .defaultHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
                 .defaultHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8")

@@ -7,13 +7,14 @@ import org.springframework.web.client.RestClient;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+// сервис для получения цены
 @Service
 public class LamodaApiClient {
 
     private final RestClient restClient;
 
     public LamodaApiClient() {
+        // настройка клиента под реального пользователя
         this.restClient = RestClient.builder()
                 .baseUrl("https://www.lamoda.ru")
                 .defaultHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
@@ -22,8 +23,10 @@ public class LamodaApiClient {
                 .build();
     }
 
+    // получение цены по ссылке
     public Long getProductPrice(String productPath) {
         try {
+            // скачиваем страницу
             String html = restClient.get()
                     .uri(productPath)
                     .retrieve()
@@ -33,20 +36,21 @@ public class LamodaApiClient {
                 throw new IllegalStateException("Пустой ответ от Lamoda");
             }
 
+            // парсим
             Document doc = Jsoup.parse(html);
 
-            // === Способ 1: Исходный Open Graph (самый быстрый) ===
+            // поиск тега прайс в методанных
             Element priceMeta = doc.selectFirst("meta[property=product:price:amount]");
             if (priceMeta != null) {
                 return (long) Double.parseDouble(priceMeta.attr("content"));
             }
 
-            // === Способ 2: Поиск в JSON-скриптах (Обычно там хранится состояние React) ===
-            // Ищем теги <script>, содержащие информацию о цене
+            // поиск в json скриптах
+            // ищем теги <script>, содержащие информацию о цене
             for (Element script : doc.select("script")) {
                 String scriptContent = script.html();
                 if (scriptContent.contains("\"price\"")) {
-                    // Используем регулярное выражение для быстрого поиска цены
+                    // регулярное выражение для быстрого поиска цены
                     Pattern pattern = Pattern.compile("\"price\"\\s*:\\s*(\\d+)");
                     Matcher matcher = pattern.matcher(scriptContent);
                     if (matcher.find()) {
@@ -55,18 +59,18 @@ public class LamodaApiClient {
                 }
             }
 
-            // === Способ 3: Поиск по визуальным классам (Fallback на случай изменений) ===
-            // Актуальные селекторы текущей цены на Lamoda
+            // поиск по визуальным классам
+            // актуальные селекторы текущей цены на Lamoda
             Element priceElement = doc.selectFirst(".ui-catalog-search-brand__price-current, span[class*='price']");
             if (priceElement != null) {
-                // Оставляем в строке только цифры
+                // оставляем в строке только цифры
                 String cleanPrice = priceElement.text().replaceAll("[^0-9]", "");
                 if (!cleanPrice.isEmpty()) {
                     return Long.parseLong(cleanPrice);
                 }
             }
 
-            // Если ничего не помогло, вероятно, мы поймали капчу
+            // если ничего не помогло, вероятно, мы поймали капчу
             if (html.contains("cloudflare") || html.contains("captcha")) {
                 throw new IllegalStateException("Запрос заблокирован защитой Cloudflare / Капчей");
             }

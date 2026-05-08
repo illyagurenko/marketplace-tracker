@@ -12,4 +12,8 @@ public class AnalizService {
     public AnalizService(LamodaStrategy lamodaStrategy) {
         this.lamodaStrategy = lamodaStrategy;
     }
+
+    public boolean isLessTargetPrice(){
+        return false;
+    }
 }
